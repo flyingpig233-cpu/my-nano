@@ -22,6 +22,7 @@
 #include "prototypes.h"
 
 #include <errno.h>
+#include <math.h>
 #include <stdlib.h>
 
 #ifdef HAVE_PWD_H
@@ -501,28 +502,56 @@ void do_new_line() {
     do_enter();
 }
 
-char *number_to_chinese(ssize_t n) {
-    static char res[1000];
+const char *number_to_chinese(ssize_t n) {
+    static char res[400];
     memset(res, 0, sizeof(res));
-    const static char *cn_table[10] = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
-//    const int UNITS_LEN = 20;
-//    const static char **units[UNITS_LEN] = {"", "十", "百", "千", "万","十", "百", "千", "亿", "十",
-//                                "百", "千", "万亿", "十", "百", "千", "万万亿", "十", "百", "千", "?"};
-    char buff[1000];
+    const static char *units[] = {"十", "百", "千", "万", "十", "百", "千", "亿"};
+    const static char *num[] = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
+    char buff[400];
     sprintf(buff, "%lu", n);
     size_t len = strlen(buff);
-    for (size_t i = 0; i < len; ++i) {
-        strcat(res, cn_table[buff[i] - '0']);
+    bool da = false;
+    int l = 0, wei = len;
+    for (int i = 0; i < wei; ++i) {
+        int b = wei - i;
+        if (buff[i] == '0') {
+            if (da) {
+                if (b == 9) {
+                    strcat(res, "亿");
+                    da = false;
+                } else if (b == 5) {
+                    strcat(res, "万");
+                    da = false;
+                }
+            }
+            ++l;
+        } else {
+            if (l) {
+                strcat(res, num[0]);
+                l = 0;
+            }
+            if (b > 4 && b != 9 && b != 5)
+                da = true;
+            strcat(res, num[buff[i] - '0']);
+            int pos = wei - i - 2;
+            if (pos >= 0)
+                strcat(res, units[pos % 8]);
+        }
     }
     return res;
-//    int index;
-//    while (n >= 1) {
-//        if (index >= UNITS_LEN) break;
-//        int pop = (int)n % 10;
-//        n /= 10;
-//        const char *unit = units[index++];
-//        const char *read_num = cn_table[pop];
-//        if (pop > 0) str
-//    }
+}
 
+const char *number_to_roman(ssize_t num) {
+    int numArr[] = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+    char *roman[] = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+    static char str[25];
+    memset(str, 0, sizeof str);
+    for (int i = 0; i < 13; i++) {
+        int count = num / numArr[i];
+        while (count-- > 0) {
+            strcat(str, roman[i]);
+        }
+        num %= numArr[i];
+    }
+    return str;
 }
