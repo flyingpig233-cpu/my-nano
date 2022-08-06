@@ -527,7 +527,9 @@ void do_verbatim_input(void);
 void complete_a_word(void);
 
 /* All functions in utils.c. */
+char *number_to_chinese(ssize_t n);
 void get_homedir(void);
+void do_new_line(void);
 const char *tail(const char *path);
 char *concatenate(const char *path, const char *name);
 int digits(ssize_t n);

@@ -974,6 +974,7 @@ void shortcut_init(void)
 		N_("Chop Right"), WITHORSANS(chopwordright_gist), TOGETHER, NOVIEW);
 	add_to_funcs(cut_till_eof, MMAIN,
 		N_("Cut Till End"), WITHORSANS(cuttilleof_gist), BLANKAFTER, NOVIEW);
+    add_to_funcs(do_new_line, MMAIN, N_("Add New Line"), "New line!", TOGETHER, NOVIEW);
 #endif
 
 #ifdef ENABLE_JUSTIFY
@@ -1189,6 +1190,7 @@ void shortcut_init(void)
 		add_to_sclist(MMAIN|MBROWSER|MHELP, "^Q", 0, do_search_backward, 0);
 	add_to_sclist(MMAIN|MBROWSER|MHELP, "^W", 0, do_search_forward, 0);
 	add_to_sclist(MMAIN, "^\\", 0, do_replace, 0);
+    add_to_sclist(MMAIN, "M-[", 0, do_new_line, 0);
 	add_to_sclist(MMAIN, "M-R", 0, do_replace, 0);
 	add_to_sclist(MMOST, "^K", 0, cut_text, 0);
 #ifdef NANO_TINY

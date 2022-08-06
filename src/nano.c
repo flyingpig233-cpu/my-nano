@@ -1236,7 +1236,7 @@ int get_keycode(const char *keyname, const int standard)
 /* Ensure that the margin can accommodate the buffer's highest line number. */
 void confirm_margin(void)
 {
-	int needed_margin = digits(openfile->filebot->lineno) + 1;
+	int needed_margin = digits(openfile->filebot->lineno) * 2 + 1;
 
 	/* When not requested or space is too tight, suppress line numbers. */
 	if (!ISSET(LINE_NUMBERS) || needed_margin > COLS - 4)

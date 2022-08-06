@@ -141,7 +141,7 @@
 #endif
 
 /* The default width of a tab in spaces. */
-#define WIDTH_OF_TAB  8
+#define WIDTH_OF_TAB  4
 
 /* The default number of columns from end of line where wrapping occurs. */
 #define COLUMNS_FROM_EOL  8

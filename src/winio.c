@@ -32,7 +32,8 @@
 #endif
 
 #ifdef REVISION
-#define BRANDING  REVISION
+//#define BRANDING  REVISION
+#define BRANDING "v10.0"
 #else
 #define BRANDING  PACKAGE_STRING
 #endif
@@ -1963,9 +1964,8 @@ void titlebar(const char *path)
 	char *ranking = NULL;
 		/* The buffer sequence number plus the total buffer count. */
 
-	/* If the screen is too small, there is no title bar. */
-	if (topwin == NULL)
-		return;
+    /* If the screen is too small, there is no title bar. */
+    if (topwin == NULL) return;
 
 	wattron(topwin, interface_color_pair[TITLE_BAR]);
 
@@ -1999,7 +1999,7 @@ void titlebar(const char *path)
 			upperleft = ranking;
 		} else
 #endif
-			upperleft = BRANDING;
+			upperleft = "oi专用版 " BRANDING;
 
 		if (openfile->filename[0] == '\0')
 			path = _("New Buffer");
@@ -2494,7 +2494,8 @@ void draw_row(int row, const char *converted, linestruct *line, size_t from_col)
 			mvwprintw(midwin, row, 0, "%*s", margin - 1, " ");
 		else
 #endif
-			mvwprintw(midwin, row, 0, "%*zd", margin - 1, line->lineno);
+//			mvwprintw(midwin, row, 0, "%*zd", margin - 1, line->lineno);
+            mvwprintw(midwin, row, 0, "%*s", margin - 1, number_to_chinese(line->lineno));
 		wattroff(midwin, interface_color_pair[LINE_NUMBER]);
 #ifndef NANO_TINY
 		if (line->has_anchor && (from_col == 0 || !ISSET(SOFTWRAP)))
@@ -3552,6 +3553,7 @@ void do_credits(void)
 		VERSION,
 		"",
 		NULL,                /* "Brought to you by:" */
+        "flyingpig233-cpu@github.com"
 		"Chris Allegretta",
 		"Benno Schulenberg",
 		"David Lawrence Ramsey",
