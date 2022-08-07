@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU nano 6.4-pre1\n"
 "Report-Msgid-Bugs-To: nano-devel@gnu.org\n"
-"POT-Creation-Date: 2022-08-06 19:56+0800\n"
+"POT-Creation-Date: 2022-08-07 13:25+0800\n"
 "PO-Revision-Date: 2022-07-27 11:45+0300\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <translation-team-sq@lists.sourceforge.net>\n"
@@ -2943,39 +2943,39 @@ msgid_plural " (%zu lines)"
 msgstr[0] " (%zu rresht)"
 msgstr[1] " (%zu rreshta)"
 
-#: src/winio.c:3581
+#: src/winio.c:3582
 msgid "The nano text editor"
 msgstr "Përpunuesi nano i teksteve"
 
-#: src/winio.c:3582
+#: src/winio.c:3583
 msgid "version"
 msgstr "version"
 
-#: src/winio.c:3583
+#: src/winio.c:3584
 msgid "Brought to you by:"
 msgstr "Sjellë për ju nga:"
 
-#: src/winio.c:3584
+#: src/winio.c:3585
 msgid "Special thanks to:"
 msgstr "Falënderime të veçanta për:"
 
-#: src/winio.c:3585
+#: src/winio.c:3586
 msgid "The Free Software Foundation"
 msgstr "Free Software Foundation"
 
-#: src/winio.c:3586
+#: src/winio.c:3587
 msgid "the many translators and the TP"
 msgstr "mjaft përkthyesit dhe TP-në"
 
-#: src/winio.c:3587
+#: src/winio.c:3588
 msgid "For ncurses:"
 msgstr "Për ncurses:"
 
-#: src/winio.c:3588
+#: src/winio.c:3589
 msgid "and anyone else we forgot..."
 msgstr "dhe këdo tjetër që e kemi harruar…"
 
-#: src/winio.c:3589
+#: src/winio.c:3590
 msgid "Thank you for using nano!"
 msgstr "Faleminderit që përdorni nanon!"
 

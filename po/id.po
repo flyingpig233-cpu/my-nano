@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nano 6.1-pre1\n"
 "Report-Msgid-Bugs-To: nano-devel@gnu.org\n"
-"POT-Creation-Date: 2022-08-06 19:56+0800\n"
+"POT-Creation-Date: 2022-08-07 13:25+0800\n"
 "PO-Revision-Date: 2022-03-21 21:15+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
@@ -2922,39 +2922,39 @@ msgid " (%zu line)"
 msgid_plural " (%zu lines)"
 msgstr[0] " (%zu baris)"
 
-#: src/winio.c:3581
+#: src/winio.c:3582
 msgid "The nano text editor"
 msgstr "Nano penyunting teks"
 
-#: src/winio.c:3582
+#: src/winio.c:3583
 msgid "version"
 msgstr "versi"
 
-#: src/winio.c:3583
+#: src/winio.c:3584
 msgid "Brought to you by:"
 msgstr "Dibuat untuk Anda oleh:"
 
-#: src/winio.c:3584
+#: src/winio.c:3585
 msgid "Special thanks to:"
 msgstr "Ucapan terima kasih khusus kepada:"
 
-#: src/winio.c:3585
+#: src/winio.c:3586
 msgid "The Free Software Foundation"
 msgstr "The Free Software Foundation"
 
-#: src/winio.c:3586
+#: src/winio.c:3587
 msgid "the many translators and the TP"
 msgstr "banyak penerjemah dan TP"
 
-#: src/winio.c:3587
+#: src/winio.c:3588
 msgid "For ncurses:"
 msgstr "Untuk ncurses:"
 
-#: src/winio.c:3588
+#: src/winio.c:3589
 msgid "and anyone else we forgot..."
 msgstr "dan orang lain yang kami lupa...."
 
-#: src/winio.c:3589
+#: src/winio.c:3590
 msgid "Thank you for using nano!"
 msgstr "Terima kasih telah menggunakan nano!"
 

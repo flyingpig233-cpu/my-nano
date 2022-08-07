@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU nano 6.4-pre1\n"
 "Report-Msgid-Bugs-To: nano-devel@gnu.org\n"
-"POT-Creation-Date: 2022-08-06 19:56+0800\n"
+"POT-Creation-Date: 2022-08-07 13:25+0800\n"
 "PO-Revision-Date: 2022-07-27 23:35+0900\n"
 "Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Language-Team: Korean <translation-team-ko@googlegroups.com>\n"
@@ -2904,39 +2904,39 @@ msgid " (%zu line)"
 msgid_plural " (%zu lines)"
 msgstr[0] "(%zu 행)"
 
-#: src/winio.c:3581
+#: src/winio.c:3582
 msgid "The nano text editor"
 msgstr "나노 텍스트 편집기"
 
-#: src/winio.c:3582
+#: src/winio.c:3583
 msgid "version"
 msgstr "버전"
 
-#: src/winio.c:3583
+#: src/winio.c:3584
 msgid "Brought to you by:"
 msgstr "제공자:"
 
-#: src/winio.c:3584
+#: src/winio.c:3585
 msgid "Special thanks to:"
 msgstr "특히 감사드릴 여러분:"
 
-#: src/winio.c:3585
+#: src/winio.c:3586
 msgid "The Free Software Foundation"
 msgstr "자유 소프트웨어 재단"
 
-#: src/winio.c:3586
+#: src/winio.c:3587
 msgid "the many translators and the TP"
 msgstr "다수 번역자와 TranslationProject"
 
-#: src/winio.c:3587
+#: src/winio.c:3588
 msgid "For ncurses:"
 msgstr "ncurses:"
 
-#: src/winio.c:3588
+#: src/winio.c:3589
 msgid "and anyone else we forgot..."
 msgstr "그리고 우리가 잊은 다른 여러분..."
 
-#: src/winio.c:3589
+#: src/winio.c:3590
 msgid "Thank you for using nano!"
 msgstr "나노를 사용해주셔서 감사합니다!"
 
