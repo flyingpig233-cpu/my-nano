@@ -30,8 +30,11 @@
 volatile sig_atomic_t the_window_resized = FALSE;
 /* Set to TRUE by the handler whenever a SIGWINCH occurs. */
 #endif
+ssize_t saying_size = 0;
+char *special_title = NULL;
+char spaces[256];
 
-char *sayings[SAYING_SIZE] = {
+char *sayings[MAX_SAYING_SIZE]/* = {
         "Love For All, Hatred For None. – Khalifatul Masih III",
         "Change the world by being yourself. – Amy Poehler",
         "Every moment is a fresh beginning. – T.S Eliot",
@@ -48,7 +51,26 @@ char *sayings[SAYING_SIZE] = {
         "Determine your priorities and focus on them. – Eileen McDargh",
         "Yesterday you said tomorrow. Just do it. – Nike",
         "I don’t need it to be easy, I need it to be worth it. – Lil Wayne"
-};
+}*/;
+
+const char ascii_icon[] = "                :::                                               \n"
+                          "  iLE88Dj.  :jD88888Dj:                                           \n"
+                          ".LGitE888D.f8GjjjL8888E;        .d8888b.  888b    888 888     888 \n"
+                          "iE   :8888Et.     .G8888.      d88P  Y88b 8888b   888 888     888 \n"
+                          ";i    E888,        ,8888,      888    888 88888b  888 888     888 \n"
+                          "      D888,        :8888:      888        888Y88b 888 888     888 \n"
+                          "      D888,        :8888:      888  88888 888 Y88b888 888     888 \n"
+                          "      D888,        :8888:      888    888 888  Y88888 888     888 \n"
+                          "      D888,        :8888:      Y88b  d88P 888   Y8888 Y88b. .d88P \n"
+                          "      888W,        :8888:       \"Y8888P88 888    Y888  \"Y88888P\"  \n"
+                          "      W88W,        :8888:                                         \n"
+                          "      W88W:        :8888:      88888b.   8888b.  88888b.   .d88b. \n"
+                          "      DGGD:        :8888:      888 \"88b     \"88b 888 \"88b d88\"\"88b\n"
+                          "                   :8888:      888  888 .d888888 888  888 888  888\n"
+                          "                   :W888:      888  888 888  888 888  888 Y88..88P\n"
+                          "                   :8888:      888  888 \"Y888888 888  888  \"Y88P\" \n"
+                          "                    E888i                                         \n"
+                          "                    tW88D                                           ";
 
 bool on_a_vt = FALSE;
 /* Whether we're running on a Linux console (a VT). */
@@ -1004,7 +1026,7 @@ void shortcut_init(void) {
                  N_("Chop Right"), WITHORSANS(chopwordright_gist), TOGETHER, NOVIEW);
     add_to_funcs(cut_till_eof, MMAIN,
                  N_("Cut Till End"), WITHORSANS(cuttilleof_gist), BLANKAFTER, NOVIEW);
-    add_to_funcs(do_new_line, MMAIN, N_("Add New Line"), "New line!", BLANKAFTER, NOVIEW);
+    add_to_funcs(do_new_line, MMAIN, N_("Add New Line"), _("New line!"), BLANKAFTER, NOVIEW);
 #endif
 
 #ifdef ENABLE_JUSTIFY
@@ -1309,7 +1331,7 @@ void shortcut_init(void) {
         add_to_sclist(MMOST|MBROWSER|MHELP, "\xE2\x96\xb8", KEY_RIGHT, do_right, 0);
         add_to_sclist(MSOME, "^\xE2\x97\x82", CONTROL_LEFT, to_prev_word, 0);
         add_to_sclist(MSOME, "^\xE2\x96\xb8", CONTROL_RIGHT, to_next_word, 0);
-#if !defined(NANO_TINY) && defined(ENABLE_MULTIBUFFER)
+#if defined(ENABLE_MULTIBUFFER) && !defined(NANO_TINY)
         if (!on_a_vt) {
             add_to_sclist(MMAIN, "M-\xE2\x97\x82", ALT_LEFT, switch_to_prev_buffer, 0);
             add_to_sclist(MMAIN, "M-\xE2\x96\xb8", ALT_RIGHT, switch_to_next_buffer, 0);
@@ -1322,7 +1344,7 @@ void shortcut_init(void) {
         add_to_sclist(MMOST | MBROWSER | MHELP, "Right", KEY_RIGHT, do_right, 0);
         add_to_sclist(MSOME, "^Left", CONTROL_LEFT, to_prev_word, 0);
         add_to_sclist(MSOME, "^Right", CONTROL_RIGHT, to_next_word, 0);
-#ifdef ENABLE_MULTIBUFFER
+#if defined(ENABLE_MULTIBUFFER) && !defined(NANO_TINY)
         if (!on_a_vt) {
             add_to_sclist(MMAIN, "M-Left", ALT_LEFT, switch_to_prev_buffer, 0);
             add_to_sclist(MMAIN, "M-Right", ALT_RIGHT, switch_to_next_buffer, 0);
@@ -1378,12 +1400,12 @@ void shortcut_init(void) {
     add_to_sclist(MMAIN | MHELP, "M-=", 0, do_scroll_down, 0);
 #endif
 #ifdef ENABLE_MULTIBUFFER
-    add_to_sclist(MMAIN, "M-<", 0, switch_to_prev_buffer, 0);
     add_to_sclist(MMAIN, "M-,", 0, switch_to_prev_buffer, 0);
-    add_to_sclist(MMAIN, "M->", 0, switch_to_next_buffer, 0);
+    add_to_sclist(MMAIN, "M-<", 0, switch_to_prev_buffer, 0);
     add_to_sclist(MMAIN, "M-.", 0, switch_to_next_buffer, 0);
+    add_to_sclist(MMAIN, "M->", 0, switch_to_next_buffer, 0);
 #endif
-    add_to_sclist(MMOST, "M-V", 0, do_verbatim_input, 0);
+     add_to_sclist(MMOST, "M-V", 0, do_verbatim_input, 0);
 #ifndef NANO_TINY
     add_to_sclist(MMAIN, "M-T", 0, cut_till_eof, 0);
     add_to_sclist(MEXECUTE, "^V", 0, cut_till_eof, 0);
@@ -1411,7 +1433,9 @@ void shortcut_init(void) {
     add_to_sclist((MMOST | MBROWSER | MYESNO) & ~MFINDINHELP, "M-X", 0, do_toggle, NO_HELP);
     add_to_sclist(MMAIN, "M-C", 0, do_toggle, CONSTANT_SHOW);
     add_to_sclist(MMAIN, "M-S", 0, do_toggle, SOFTWRAP);
-    add_to_sclist(MMAIN, "M-$", 0, do_toggle, SOFTWRAP);  /* Legacy keystroke. */
+    add_to_sclist(MMAIN, "M-$", 0, do_toggle, LOCAL_LINE);  /* Legacy keystroke. */
+    add_to_sclist(MMAIN, "M-'", 0, do_toggle, SAYING);
+    add_to_sclist(MMAIN, "M-\"", 0, do_toggle, SHOW_DATE);
 #ifdef ENABLE_LINENUMBERS
     add_to_sclist(MMAIN, "M-N", 0, do_toggle, LINE_NUMBERS);
     add_to_sclist(MMAIN, "M-#", 0, do_toggle, LINE_NUMBERS);  /* Legacy keystroke. */
@@ -1578,6 +1602,12 @@ const char *epithet_of_flag(int flag) {
             return N_("Conversion of typed tabs to spaces");
         case USE_MOUSE:
             return N_("Mouse support");
+        case LOCAL_LINE:
+            return N_("Relative line number");
+        case SAYING:
+            return N_("Show sayings");
+        case SHOW_DATE:
+            return N_("Show date");
         default:
             return "Ehm...";
     }

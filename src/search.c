@@ -796,7 +796,9 @@ void goto_line_and_column(ssize_t line, ssize_t column, bool retain_answer,
 		if (column == 0)
 			column = openfile->placewewant + 1;
 	}
-
+    if (ISSET(LOCAL_LINE)) {
+        line = openfile->current->lineno + line;
+    }
 	/* Take a negative line number to mean: from the end of the file. */
 	if (line < 0)
 		line = openfile->filebot->lineno + line + 1;

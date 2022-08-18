@@ -36,8 +36,7 @@
 #endif
 
 #ifdef REVISION
-//#define BRANDING  REVISION
-#define BRANDING "v10.0"
+#define BRANDING  REVISION
 #else
 #define BRANDING  PACKAGE_STRING
 #endif
@@ -1988,14 +1987,24 @@ void titlebar(const char *path) {
             upperleft = ranking;
         } else
 #endif
-        upperleft = "豪华至尊专用版 " BRANDING;
-
+        if (special_title != NULL) {
+            upperleft = special_title;
+        }
         if (openfile->filename[0] == '\0')
             path = _("New Buffer");
         else
             path = openfile->filename;
 
-        if (ISSET(VIEW_MODE))
+        if (ISSET(SHOW_DATE)) {
+            time_t rawtime;
+            struct tm *timeinfo;
+            time(&rawtime);
+            timeinfo = localtime(&rawtime);
+            static char cache[64];
+            sprintf(cache, _("%d-%02d-%02d"),
+                    timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday);
+            state = cache;
+        } else if (ISSET(VIEW_MODE))
             state = _("View");
 #ifndef NANO_TINY
         else if (ISSET(STATEFLAGS))
@@ -2020,8 +2029,11 @@ void titlebar(const char *path) {
         pathlen++;
 
     /* Only print the version message when there is room for it. */
-    if (verlen + prefixlen + pathlen + pluglen + statelen <= COLS)
+    if (verlen + prefixlen + pathlen + pluglen + statelen <= COLS) {
+        wattron(topwin, interface_color_pair[EDITOR_NAME]);
         mvwaddstr(topwin, 0, 2, upperleft);
+        wattroff(topwin, interface_color_pair[EDITOR_NAME]);
+    }
     else {
         verlen = 2;
         /* If things don't fit yet, give up the placeholder. */
@@ -2256,7 +2268,7 @@ void statusline(message_type importance, const char *msg, ...) {
         return;
     }
 
-#if !defined(NANO_TINY) && defined(ENABLE_MULTIBUFFER)
+#if defined(ENABLE_MULTIBUFFER) && !defined(NANO_TINY)
     if (!we_are_running && importance == ALERT && openfile && !openfile->fmt &&
                         !openfile->errormessage && openfile->next != openfile)
         openfile->errormessage = copy_of(compound);
@@ -2477,7 +2489,11 @@ void draw_row(int row, const char *converted, linestruct *line, size_t from_col)
             mvwprintw(midwin, row, 0, "%*s", margin, " ");
         else {
 #endif
-        mvwprintw(midwin, row, 0, "%*zd", margin - 1, line->lineno);
+        if (ISSET(LOCAL_LINE)) {
+            mvwprintw(midwin, row, 0, "%*zd", margin - 1, abs(openfile->current->lineno - line->lineno));
+        } else {
+            mvwprintw(midwin, row, 0, "%*zd", margin - 1, line->lineno);
+        }
         wattroff(midwin, interface_color_pair[LINE_NUMBER]);
 #ifndef NANO_TINY
         }
@@ -3398,35 +3414,42 @@ void draw_all_subwindows(void) {
 /* Display on the status bar details about the current cursor position. */
 void report_cursor_position(void) {
 
-    statusline(INFO, "%s", current_saying);
-//    size_t fullwidth = breadth(openfile->current->data) + 1;
-//    size_t column = xplustabs() + 1;
-//    int linepct, colpct, charpct;
-//    char saved_byte;
-//    size_t sum;
-//
-//    saved_byte = openfile->current->data[openfile->current_x];
-//    openfile->current->data[openfile->current_x] = '\0';
-//
-//    /* Determine the size of the file up to the cursor. */
-//    sum = number_of_characters_in(openfile->filetop, openfile->current);
-//
-//    openfile->current->data[openfile->current_x] = saved_byte;
-//
-//    /* Calculate the percentages. */
-//    linepct = 100 * openfile->current->lineno / openfile->filebot->lineno;
-//    colpct = 100 * column / fullwidth;
-//    charpct = (openfile->totsize == 0) ? 0 : 100 * sum / openfile->totsize;
-//
-//    char buff[256], msg[512];
-//    sprintf(buff,
-//               _("line %*zd/%zd (%2d%%), col %2zu/%2zu (%3d%%), char %*zu/%zu (%2d%%)"),
-//               digits(openfile->filebot->lineno),
-//               openfile->current->lineno, openfile->filebot->lineno, linepct,
-//               column, fullwidth, colpct,
-//               digits(openfile->totsize), sum, openfile->totsize, charpct);
-//    strcat(msg, )
-//    statusline(INFO, buff);
+    size_t fullwidth = breadth(openfile->current->data) + 1;
+    size_t column = xplustabs() + 1;
+    int linepct, colpct, charpct;
+    char saved_byte;
+    size_t sum;
+
+    saved_byte = openfile->current->data[openfile->current_x];
+    openfile->current->data[openfile->current_x] = '\0';
+
+    /* Determine the size of the file up to the cursor. */
+    sum = number_of_characters_in(openfile->filetop, openfile->current);
+
+    openfile->current->data[openfile->current_x] = saved_byte;
+
+    /* Calculate the percentages. */
+    linepct = 100 * openfile->current->lineno / openfile->filebot->lineno;
+    colpct = 100 * column / fullwidth;
+    charpct = (openfile->totsize == 0) ? 0 : 100 * sum / openfile->totsize;
+
+    static char buff[512], msg[512];
+    sprintf(msg,
+            _("line %*zd/%zd (%2d%%), col %2zu/%2zu (%3d%%), char %*zu/%zu (%2d%%)"),
+            digits(openfile->filebot->lineno),
+            openfile->current->lineno, openfile->filebot->lineno, linepct,
+            column, fullwidth, colpct,
+            digits(openfile->totsize), sum, openfile->totsize, charpct);
+
+    memset(buff, 0, sizeof(buff));
+    if (COLS > 120 && ISSET(SAYING) && current_saying != NULL) {
+        strcat(buff, current_saying);
+        size_t msg_len = strlen(msg);
+        size_t saying_len = strlen(current_saying);
+        strncat(buff, spaces, COLS - 2 - msg_len - saying_len);
+    }
+    strcat(buff, msg);
+    statusline(INFO, buff);
 }
 
 /* Highlight the text between the given two columns on the current line. */
@@ -3507,6 +3530,18 @@ void spotlight_softwrapped(size_t from_col, size_t to_col) {
 }
 
 #endif
+
+
+void update_number_bar(void) {
+    int row = 0;
+    linestruct *line = openfile->edittop;
+    while (row < editwincols && line != NULL) {
+        update_line(line, 0);
+        line = line->next;
+        row++;
+    }
+}
+
 
 #ifdef ENABLE_EXTRA
 #define CREDIT_LEN  54

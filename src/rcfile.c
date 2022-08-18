@@ -68,6 +68,9 @@ static const rcoption rcopts[] = {
 #endif
 	{"nohelp", NO_HELP},
 	{"nonewlines", NO_NEWLINES},
+    {"saying", SAYING},
+    {"showdate", SHOW_DATE},
+    {"relative_line", LOCAL_LINE},
 #ifdef ENABLE_WRAPPING
 	{"nowrap", NO_WRAP},  /* Deprecated; remove in 2024. */
 #endif
@@ -119,6 +122,8 @@ static const rcoption rcopts[] = {
 	{"wordbounds", WORD_BOUNDS},
 	{"wordchars", 0},
 	{"zap", LET_THEM_ZAP},
+    {"special_title", 0},
+    {"newsaying", 0},
 	{"zero", ZERO},
 #endif
 #ifdef ENABLE_COLOR
@@ -133,6 +138,7 @@ static const rcoption rcopts[] = {
 	{"statuscolor", 0},
 	{"errorcolor", 0},
 	{"keycolor", 0},
+    {"namecolor", 0},
 	{"functioncolor", 0},
 #endif
 	{NULL, 0}
@@ -450,8 +456,10 @@ keystruct *strtosc(const char *input)
 		s->func = do_toggle;
 		if (!strcmp(input, "nohelp"))
 			s->toggle = NO_HELP;
-		else if (!strcmp(input, "zero"))
-			s->toggle = ZERO;
+        else if (!strcmp(input, "saying"))
+            s->toggle = SAYING;
+        else if (!strcmp(input, "showdate"))
+            s->toggle = SHOW_DATE;
 		else if (!strcmp(input, "constantshow"))
 			s->toggle = CONSTANT_SHOW;
 		else if (!strcmp(input, "softwrap"))
@@ -459,6 +467,10 @@ keystruct *strtosc(const char *input)
 #ifdef ENABLE_LINENUMBERS
 		else if (!strcmp(input, "linenumbers"))
 			s->toggle = LINE_NUMBERS;
+        else if (!strcmp(input, "relative_line"))
+            s->toggle = LOCAL_LINE;
+		else if (!strcmp(input, "zero"))
+			s->toggle = ZERO;
 #endif
 		else if (!strcmp(input, "whitespacedisplay"))
 			s->toggle = WHITESPACE_DISPLAY;
@@ -1591,6 +1603,8 @@ void parse_rcfile(FILE *rcstream, bool just_syntax, bool intros_only)
 			color_combo[KEY_COMBO] = parse_interface_color(argument);
 		else if (strcmp(option, "functioncolor") == 0)
 			color_combo[FUNCTION_TAG] = parse_interface_color(argument);
+        else if (strcmp(option, "namecolor") == 0)
+            color_combo[EDITOR_NAME] = parse_interface_color(argument);
 		else
 #endif
 #ifdef ENABLE_OPERATINGDIR
@@ -1647,6 +1661,17 @@ void parse_rcfile(FILE *rcstream, bool just_syntax, bool intros_only)
 #ifndef NANO_TINY
 		if (strcmp(option, "backupdir") == 0)
 			backup_dir = mallocstrcpy(backup_dir, argument);
+        else if (strcmp(option, "special_title") == 0)
+            special_title = mallocstrcpy(special_title, argument);
+        else if (strcmp(option, "newsaying") == 0)
+        {
+            if (saying_size >= MAX_SAYING_SIZE) {
+				jot_error(N_("Too much sayings!!! Max saying size is %d"), MAX_SAYING_SIZE);
+            } else {
+                sayings[saying_size] = mallocstrcpy(sayings[saying_size], argument);
+                ++saying_size;
+            }
+        }
 		else if (strcmp(option, "wordchars") == 0)
 			word_chars = mallocstrcpy(word_chars, argument);
 		else if (strcmp(option, "guidestripe") == 0) {

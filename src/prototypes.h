@@ -27,9 +27,12 @@
 extern volatile sig_atomic_t the_window_resized;
 #endif
 
-#define SAYING_SIZE 16
-
-extern char *sayings[SAYING_SIZE];
+#define MAX_SAYING_SIZE 150
+extern ssize_t saying_size;
+extern char *special_title;
+extern const char ascii_icon[];
+extern char spaces[256];
+extern char *sayings[MAX_SAYING_SIZE];
 extern char *current_saying;
 extern int max_margin;
 extern bool on_a_vt;
@@ -641,6 +644,8 @@ void do_gotolinecolumn(void);
 
 #ifndef NANO_TINY
 
+bool find_a_bracket(bool reverse, const char *bracket_pair);
+
 void do_find_bracket(void);
 
 void put_or_lift_anchor(void);
@@ -724,6 +729,7 @@ void do_verbatim_input(void);
 void complete_a_word(void);
 
 /* All functions in utils.c. */
+
 const char *number_to_chinese(ssize_t n);
 
 const char *number_to_roman(ssize_t num);
@@ -806,6 +812,8 @@ linestruct *line_from_number(ssize_t number);
 #endif
 
 /* Most functions in winio.c. */
+void update_number_bar(void);
+
 void record_macro(void);
 
 void run_macro(void);
